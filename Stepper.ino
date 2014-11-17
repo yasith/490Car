@@ -1,24 +1,30 @@
-
+#include <Servo.h>
 #include <Stepper.h>
 
 #define STEPS 32*16
 
-Stepper stepper1(STEPS, 12, 13);
-Stepper stepper2(STEPS, 9, 8);
+#define UP 135
+#define DOWN 90
+
+Stepper stepper1(STEPS, 9, 8);
+Stepper stepper2(STEPS, 12, 13);
+
+Servo servo;
 
 int stepSpeed = 200;
 
 int l = 0;
 int r = 0;
+int m = 1; // 1 = UP, 0 = DOWN
+
+int pos = 0;
 
 void setup() {
   
   Serial.begin(115200);
-  
-  pinMode(12, OUTPUT);
-  pinMode(13, OUTPUT);
-  pinMode(9, OUTPUT);
-  pinMode(8, OUTPUT);
+
+  servo.attach(6);
+  servo.write(UP);
   
   stepper1.setSpeed(stepSpeed);
   stepper2.setSpeed(stepSpeed);
@@ -28,10 +34,7 @@ void loop() {
   
   if(Serial.available()){
     char inByte = Serial.read();
-//    if(inByte != ' '){
-//      l = l == 1 ? 0 : 1;
-//      r = r == 1 ? 0 : 1;
-//    }
+
     if(inByte == 'l'){
       l = 1;
       r = 0;
@@ -48,6 +51,11 @@ void loop() {
       l = 0;
       r = 0;
     }
+    if(inByte == 'm'){
+      servo.write(m == 1 ? DOWN : UP);
+      m = m == 1 ? 0 : 1;
+    }
+    
     Serial.println("Moved");
     Serial.println(inByte); 
   }
