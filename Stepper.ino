@@ -3,14 +3,17 @@ struct Stepper {
   int dir;
 };
 
-struct Stepper right = {11, 10};
-
+struct Stepper right = {13, 12};
+struct Stepper left = {11, 10};
 void setup() {
   
   Serial.begin(115200);
   
   pinMode(right.step, OUTPUT);
   pinMode(right.dir, OUTPUT);    
+     
+  pinMode(left.step, OUTPUT);
+  pinMode(left.dir, OUTPUT);
 }
 
 void loop() {
@@ -19,14 +22,7 @@ void loop() {
     
     delay(1000);
     
-    digitalWrite(10, LOW);
-  
-    for(int i = 0; i < 32 * 16; i++) {
-      digitalWrite(right.step, HIGH);
-      delay(10);
-      digitalWrite(right.step, LOW);
-      delay(10);  
-    }
+    move(-1, -1, 32 * 16);
   
     delay(1000);
 }
@@ -38,11 +34,19 @@ void move(int r, int l, int step) {
   } else {
     digitalWrite(right.dir, LOW);
   }
+    
+  if(l > 0) {
+    digitalWrite(left.dir, LOW);  
+  } else {
+    digitalWrite(left.dir, HIGH);
+  }
   
    for(int i = 0; i < step; i++) {
       digitalWrite(right.step, HIGH);
+      digitalWrite(left.step, HIGH);
       delay(10);
       digitalWrite(right.step, LOW);
+      digitalWrite(left.step, LOW);
       delay(10);  
     }
   
