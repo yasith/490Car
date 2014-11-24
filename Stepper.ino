@@ -1,74 +1,38 @@
-#include <Servo.h>
-#include <Stepper.h>
+struct Stepper {
+  int step;
+  int dir;
+};
 
-#define STEPS 32*16
-
-#define UP 135
-#define DOWN 90
-
-Stepper stepper1(STEPS, 9, 8);
-Stepper stepper2(STEPS, 12, 13);
-
-Servo servo;
-
-int stepSpeed = 200;
-
-int l = 0;
-int r = 0;
-int m = 1; // 1 = UP, 0 = DOWN
-
-int pos = 0;
+struct Stepper right = {11, 10};
 
 void setup() {
   
   Serial.begin(115200);
-
-  servo.attach(6);
-  servo.write(UP);
   
-  stepper1.setSpeed(stepSpeed);
-  stepper2.setSpeed(stepSpeed);
+  pinMode(right.step, OUTPUT);
+  pinMode(right.dir, OUTPUT);    
 }
 
 void loop() {
-  
-  if(Serial.available()){
-    char inByte = Serial.read();
+    digitalWrite(10, HIGH);
 
-    if(inByte == 'l'){
-      l = 1;
-      r = 0;
-    }
-    if(inByte == 'r'){
-      r = 1;
-      l = 0;
-    }
-    if(inByte == 'f'){
-      l = 1;
-      r = 1;
-    }
-    if(inByte == 's'){
-      l = 0;
-      r = 0;
-    }
-    if(inByte == 'm'){
-      servo.write(m == 1 ? DOWN : UP);
-      m = m == 1 ? 0 : 1;
+    for(int i = 0; i < 32 * 16; i++) {
+      digitalWrite(11, HIGH);
+      delay(10);
+      digitalWrite(11, LOW);
+      delay(10);  
     }
     
-    Serial.println("Moved");
-    Serial.println(inByte); 
-  }
+    delay(1000);
+    
+    digitalWrite(10, LOW);
   
-  // put your main code here, to run repeatedly:
-    if(l == 1){
-      stepper1.step(100);
-    }else {
-      stepper1.step(1);
+    for(int i = 0; i < 32 * 16; i++) {
+      digitalWrite(11, HIGH);
+      delay(10);
+      digitalWrite(11, LOW);
+      delay(10);  
     }
-    if(r == 1){
-      stepper2.step(100);
-    }else {
-      stepper2.step(1);
-    }
+  
+    delay(1000);
 }
