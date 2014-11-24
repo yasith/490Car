@@ -17,14 +17,23 @@ void setup() {
 }
 
 void loop() {
-
-    move(1, 1, 32 * 16);
-    
-    delay(1000);
-    
-    move(-1, -1, 32 * 16);
   
-    delay(1000);
+ if(Serial.available()) {
+    char in = Serial.read();
+   
+    if(in == 'l'){
+      move(1, -1, 32 * 16);
+    } 
+    if(in == 'r'){
+      move(-1, 1, 32 * 16);
+    }
+    if(in == 'f'){
+      move(1, 1, 32 * 16);
+    }
+    if(in == 'b'){
+      move(-1, -1, 32 * 16);  
+    }
+  }
 }
 
 void move(int r, int l, int step) {
