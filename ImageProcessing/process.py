@@ -32,6 +32,7 @@ if __name__ == "__main__":
   er, ec = findPoint(1, cv2.imread('processed_maze.png'))
 
   output = cv2.imread('processed_maze.png')
+  out2 = cv2.imread('processed_maze.png')
 
   print "Starting Point ",
   print (sr, sc)
@@ -41,6 +42,47 @@ if __name__ == "__main__":
   radius = 5
   cv2.circle(output, (sc,sr), radius, (0,0,255))
   cv2.circle(output, (ec,er), radius, (0,255,0))
+
+  queue = []
+  queue.append((sr,sc))
+  dirs = [(1,0), (-1,0), (0,1), (0,-1)]
+
+  width, height, t = output.shape
+
+  path = {}
+  print "Starting BFS"
+  while queue:
+    x,y = queue.pop(0)
+    #print "Visiting",
+    #print x,y
+    cv2.circle(out2, (y,x), 1, (255,0,0))
+    if (x,y) == (er, ec):
+      print "Reached destination"
+      break;
+    for d in dirs:
+      nx = x+d[0]
+      ny = y+d[1]
+      if (nx,ny) in path:
+        print "Breaking because visited"
+        continue
+      if not (0 < nx < width and 0 < ny < height):
+        print "Breaking because bounds"
+        continue
+      if tuple(output[nx,ny]) == (255,255,255):
+        print "Breaking because white"
+        continue
+      else:
+        print tuple(output[nx,ny]),
+        print nx, ny
+      queue.append((nx, ny))
+      path[(nx, ny)] = (x,y)
+
+  cv2.imwrite('1.jpg', out2)
+
+  cx,cy = (er,ec)
+  while not (cx,cy) == (sr,sc):
+    cv2.circle(output, (cy,cx), 1, (255,0,0))
+    cx,cy = path[(cx,cy)]
 
   cv2.imwrite('detected.jpg', output)
 

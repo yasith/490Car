@@ -1,0 +1,15 @@
+import serial
+
+serial_speed = 115200
+serial_port = '/dev/cu.AdafruitEZ-Link422d-SPP'
+
+con = serial.Serial(serial_port, serial_speed, timeout=1)
+
+con.write('l')
+print(con.readLine())
+
+con.write('r')
+print(con.readLine())
+
+con.write('f')
+print(con.readLine())
